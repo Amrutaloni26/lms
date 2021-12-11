@@ -183,6 +183,7 @@ class LibraryManagementSystem:
 
         FrameDetails=Frame(self.root,bd=12,relief=RIDGE,padx=20,bg="powder blue")
         FrameDetails.place(x=0,y=600,width=1530,height=195)
+
         
 if __name__ =="__main__":
     root=Tk()
