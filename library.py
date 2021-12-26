@@ -3,6 +3,7 @@ from tkinter import ttk
 import mysql.connector
 from tkinter import messagebox
 import datetime
+import logging
 
 
 class LibraryManagementSystem:
@@ -10,7 +11,7 @@ class LibraryManagementSystem:
         self.root=root
         self.root.title("Library Management System")    
         self.root.geometry("1550x800+0+0") 
-        
+        loggers=logging.getLogger()
         
         
         
@@ -437,9 +438,11 @@ class LibraryManagementSystem:
  
 
     def add_data(self):
-        conn=mysql.connector.connect(host="localhost",username="root",password="amu26",database="mydata")
+       # self.loggers.info("Inside add data ")  
+        print(" self.member_var.get()", self.member_var.get())  
+        conn=mysql.connector.connect(host="localhost",username="root",password="amu26",database="mydat")
         my_cursor=conn.cursor()
-        my_cursor.execute("insert into library values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",(
+        my_cursor.execute("insert into new_table values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",(
                                                                                                                          self.member_var.get(),
                                                                                                                          self.prn_var.get(),
                                                                                                                          self.id_var.get(),                                                                                
@@ -457,7 +460,7 @@ class LibraryManagementSystem:
                                                                                                                          self.daysonbook_var.get(),
                                                                                                                          self.lateretnfine_var.get(),
                                                                                                                          self.dateoverdue_var.get(),
-                                                                                                                         self.finallprice.get()
+                                                                                                                         self.finallprice_var.get()
 
                                                                                                                         ))                             
 
@@ -468,15 +471,15 @@ class LibraryManagementSystem:
         conn.close()      
                 
                 
-        messagebox.showinfo("Success","Inserted hurrey")
+        messagebox.showinfo("Success","Insertion has been done successfully!")
                 
                 
                 
     def  fatch_data(self):
             
-            conn=mysql.connector.connect(host="localhost",username="root",password="amu26",database="ydata")
+            conn=mysql.connector.connect(host="localhost",username="root",password="amu26",database="mydat")
             my_cursor=conn.cursor()
-            my_cursor.execute("SELECT * FROM mydata.` library`;")
+            my_cursor.execute("SELECT * FROM new_table")
             rows=my_cursor.fetchall()
             
             if len(rows)!=0:
