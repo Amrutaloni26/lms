@@ -1,12 +1,39 @@
 from tkinter import*
-from tkinter import ttk
+from tkinter import ttk 
+import mysql.connector
+from tkinter import messagebox
+import datetime
 
 
 class LibraryManagementSystem:
     def __init__(self,root):
         self.root=root
-        self.root.title("Library Management System ")    
-        self.root.geometry("1550x800+0+0")
+        self.root.title("Library Management System")    
+        self.root.geometry("1550x800+0+0") 
+        
+        
+        
+        
+        
+       # ==================================== variable ===========================================
+        self.member_var=StringVar()
+        self.prn_var=StringVar()
+        self.id_var=StringVar()
+        self.firstname_var=StringVar()
+        self.lastname_var=StringVar()
+        self.address1_var=StringVar()
+        self.address2_var=StringVar()
+        self.postcode_var=StringVar()
+        self.mobile_var=StringVar()
+        self.bookid_var=StringVar()
+        self.booktitle_var=StringVar()
+        self.author_var=StringVar()
+        self.dateborrowed_var=StringVar()
+        self.datedue_var=StringVar()
+        self.daysonbook_var=StringVar()
+        self.lateretnfine_var=StringVar()
+        self.dateoverdue_var=StringVar()
+        self.finallprice_var=StringVar()
         
 
 
@@ -21,19 +48,20 @@ class LibraryManagementSystem:
         DataFrameLeft=LabelFrame(frame,text="LIBRARY MEMBERSHIP INFORMATION",bg="powder blue",fg="green",bd=10,relief=RIDGE,font=("times new roman",10,"bold"))
         DataFrameLeft.place(x=0,y=6,width=750,height=320)
 
-        lblmemebr=Label(DataFrameLeft,bg="powder blue", text="Member Type",font=("times new roman",9,"bold"),padx=2,pady=6)
+        lblmemebr=Label(DataFrameLeft,bg="powder blue",text="Member Type",font=("arial",9,"bold"),padx=2,pady=6)
         lblmemebr.grid(row=0,column=0,sticky=W)
 
 
         
 
-        comMember=ttk.Combobox(DataFrameLeft,font=("times new roman",10,"bold"),width=27,state="readonly")
-        comMember["value"]=("Admin Staff","Student","Lecturer ")
+        comMember=ttk.Combobox(DataFrameLeft,textvariable=self.member_var,font=("arial",10,"bold"),width=27,state="readonly")
+        comMember['value']=("Admin Staff","Student","Lecturer ")
+        comMember.current(0)
         comMember.grid(row=0,column=1)
 
         lblPRN_NO=Label(DataFrameLeft,font=("arial",10,"bold"),text="PRN NO:",padx=2,bg="powder blue")
         lblPRN_NO.grid(row=1,column=0,sticky=W)
-        txtPRN_NO=Entry(DataFrameLeft,font=("arial",10,"bold"),width=29)
+        txtPRN_NO=Entry(DataFrameLeft,font=("arial",10,"bold"),textvariable=self.prn_var,width=29)
         txtPRN_NO.grid(row=1,column=1)
         
 
@@ -43,65 +71,65 @@ class LibraryManagementSystem:
 
         lblTitle=Label(DataFrameLeft,font=("arial",10,"bold"),text="ID NO",padx=2,pady=4,bg="powder blue")
         lblTitle.grid(row=2,column=0,sticky=W)
-        txtTitle=Entry(DataFrameLeft,font=("arial",10,"bold"),width=29)
+        txtTitle=Entry(DataFrameLeft,font=("arial",10,"bold"),textvariable=self.id_var,width=29)
         txtTitle.grid(row=2,column=1)
 
 
         lblFirstName=Label(DataFrameLeft,font=("arial",10,"bold"), text="FirstName",padx=2,pady=6,bg="powder blue")
         lblFirstName.grid(row=3,column=0,sticky=W)
-        txtFirstName=Entry(DataFrameLeft,font=("arial",10,"bold"),width=29)
+        txtFirstName=Entry(DataFrameLeft,font=("arial",10,"bold"),textvariable=self.firstname_var,width=29)
         txtFirstName.grid(row=3,column=1)
 
 
-        lblLastName=Label(DataFrameLeft,font=("arial",10,"bold"),text="LastName",padx=2,pady=6,bg="powder blue")
+        lblLastName=Label(DataFrameLeft,font=("arial",10,"bold"),text="Surname",padx=2,pady=6,bg="powder blue")
         lblLastName.grid(row=4,column=0,sticky=W)
-        txtLastName=Entry(DataFrameLeft,font=("arial",10,"bold"),width=29)
+        txtLastName=Entry(DataFrameLeft,font=("arial",10,"bold"),textvariable=self.lastname_var,width=29)
         txtLastName.grid(row=4,column=1)
 
 
-        lblAddress1=Label(DataFrameLeft,font=("arial",10,"bold"),text="Address1",padx=2,pady=6,bg="powder blue")
+        lblAddress1=Label(DataFrameLeft,font=("arial",10,"bold"),text="Address1:",padx=2,pady=6,bg="powder blue")
         lblAddress1.grid(row=5,column=0,sticky=W)
-        txtAddress1=Entry(DataFrameLeft,font=("arial",10,"bold"),width=29)
+        txtAddress1=Entry(DataFrameLeft,font=("arial",10,"bold"),textvariable=self.address1_var,width=29)
         txtAddress1.grid(row=5,column=1)
 
 
-        lblAddress2=Label(DataFrameLeft,font=("arial",10,"bold"),text="Address2",padx=2,pady=6,bg="powder blue")
+        lblAddress2=Label(DataFrameLeft,font=("arial",10,"bold"),text="Address2:",padx=2,pady=6,bg="powder blue")
         lblAddress2.grid(row=6,column=0,sticky=W)
-        txtAddress2=Entry(DataFrameLeft,font=("arial",10,"bold"),width=29)
+        txtAddress2=Entry(DataFrameLeft,font=("arial",10,"bold"),textvariable=self.address2_var,width=29)
         txtAddress2.grid(row=6,column=1)
 
       
-        lblPostCode=Label(DataFrameLeft,font=("arial",10,"bold"),text="PostCode",padx=2,pady=6,bg="powder blue")
+        lblPostCode=Label(DataFrameLeft,font=("arial",10,"bold"),text=" Post Code:",padx=2,pady=6,bg="powder blue")
         lblPostCode.grid(row=7,column=0,sticky=W)
-        txtPostCode=Entry(DataFrameLeft,font=("arial",10,"bold"),width=29)
+        txtPostCode=Entry(DataFrameLeft,font=("arial",10,"bold"),textvariable=self.postcode_var,width=29)
         txtPostCode.grid(row=7,column=1)
       
 
 
-        lblMobile=Label(DataFrameLeft,font=("arial",10,"bold"),text="Mobile",padx=2,pady=6,bg="powder blue")
+        lblMobile=Label(DataFrameLeft,font=("arial",10,"bold"),text="Mobile Number",padx=2,pady=6,bg="powder blue")
         lblMobile.grid(row=8,column=0,sticky=W)
-        txtMobile=Entry(DataFrameLeft,font=("arial",10,"bold"),width=29)
+        txtMobile=Entry(DataFrameLeft,font=("arial",10,"bold"),textvariable=self.mobile_var,width=29)
         txtMobile.grid(row=8,column=1)
 
 
 
-        lblBookId=Label(DataFrameLeft,font=("arial",10,"bold"),text="BookId",padx=2,pady=6,bg="powder blue")
+        lblBookId=Label(DataFrameLeft,font=("arial",10,"bold"),text="Book id",padx=2,pady=6,bg="powder blue")
         lblBookId.grid(row=0,column=2,sticky=W)
-        txtBookId=Entry(DataFrameLeft,font=("arial",10,"bold"),width=29)
+        txtBookId=Entry(DataFrameLeft,font=("arial",10,"bold"),textvariable=self.bookid_var,width=29)
         txtBookId.grid(row=0,column=3)
 
 
 
-        lblBookTitle=Label(DataFrameLeft,font=("arial",10,"bold"),text="BookTitle",padx=2,pady=6,bg="powder blue")
+        lblBookTitle=Label(DataFrameLeft,font=("arial",10,"bold"),text="Book Title:",padx=2,pady=6,bg="powder blue")
         lblBookTitle.grid(row=1,column=2,sticky=W)
-        txtBookTitle=Entry(DataFrameLeft,font=("arial",10,"bold"),width=29)
+        txtBookTitle=Entry(DataFrameLeft,font=("arial",10,"bold"),textvariable=self.booktitle_var,width=29)
         txtBookTitle.grid(row=1,column=3)
 
 
 
-        lblAuthor=Label(DataFrameLeft,font=("arial",10,"bold"),text="Author",padx=2,pady=6,bg="powder blue")
+        lblAuthor=Label(DataFrameLeft,font=("arial",10,"bold"),text="Author Name:",padx=2,pady=6,bg="powder blue")
         lblAuthor.grid(row=2,column=2,sticky=W)
-        txtAuthor=Entry(DataFrameLeft,font=("arial",10,"bold"),width=29)
+        txtAuthor=Entry(DataFrameLeft,font=("arial",10,"bold"),textvariable=self.author_var,width=29)
         txtAuthor.grid(row=2,column=3)
       
 
@@ -110,7 +138,7 @@ class LibraryManagementSystem:
 
         lblDateBorrowed=Label(DataFrameLeft,font=("arial",10,"bold"),text="Date Borrowed:",padx=2,pady=6,bg="powder blue")
         lblDateBorrowed.grid(row=3,column=2,sticky=W)
-        txtDateBorrowed=Entry(DataFrameLeft,font=("arial",10,"bold"),width=29)
+        txtDateBorrowed=Entry(DataFrameLeft,font=("arial",10,"bold"),textvariable=self.dateborrowed_var,width=29)
         txtDateBorrowed.grid(row=3,column=3)
 
 
@@ -118,21 +146,21 @@ class LibraryManagementSystem:
    
         lblDateDue=Label(DataFrameLeft,font=("arial",10,"bold"),text="Date Due:",padx=2,pady=6,bg="powder blue")
         lblDateDue.grid(row=4,column=2,sticky=W)
-        txtDateDue=Entry(DataFrameLeft,font=("arial",10,"bold"),width=29)
+        txtDateDue=Entry(DataFrameLeft,font=("arial",10,"bold"),textvariable=self.datedue_var,width=29)
         txtDateDue.grid(row=4,column=3)
 
 
 
         lblDaysOnBook=Label(DataFrameLeft,font=("arial",10,"bold"),text="Days On Book:",padx=2,pady=6,bg="powder blue")
         lblDaysOnBook.grid(row=5,column=2,sticky=W)
-        txtDaysOnBook=Entry(DataFrameLeft,font=("arial",10,"bold"),width=29)
+        txtDaysOnBook=Entry(DataFrameLeft,font=("arial",10,"bold"),textvariable=self.daysonbook_var,width=29)
         txtDaysOnBook.grid(row=5,column=3)
 
 
 
         lblLateReturnFine=Label(DataFrameLeft,font=("arial",10,"bold"),text="Late Return Fine:",padx=2,pady=6,bg="powder blue")
         lblLateReturnFine.grid(row=6,column=2,sticky=W)
-        txtLateReturnFine=Entry(DataFrameLeft,font=("arial",10,"bold"),width=29)
+        txtLateReturnFine=Entry(DataFrameLeft,font=("arial",10,"bold"),textvariable=self.lateretnfine_var,width=29)
         txtLateReturnFine.grid(row=6,column=3)
 
       
@@ -140,7 +168,7 @@ class LibraryManagementSystem:
 
         lblDateOverdate=Label(DataFrameLeft,font=("arial",10,"bold"),text="Date Over Due:",padx=2,pady=6,bg="powder blue")
         lblDateOverdate.grid(row=7,column=2,sticky=W)
-        txtDateOverDate=Entry(DataFrameLeft,font=("arial",10,"bold"),width=29)
+        txtDateOverDate=Entry(DataFrameLeft,font=("arial",10,"bold"),textvariable=self.dateoverdue_var,width=29)
         txtDateOverDate.grid(row=7,column=3)
 
 
@@ -149,7 +177,7 @@ class LibraryManagementSystem:
 
         lblActualPrice=Label(DataFrameLeft,font=("arial",10,"bold"),text="Actual Price:",padx=2,pady=6,bg="powder blue")
         lblActualPrice.grid(row=8,column=2,sticky=W)
-        txtActualPrice=Entry(DataFrameLeft,font=("arial",10,"bold"),width=29)
+        txtActualPrice=Entry(DataFrameLeft,font=("arial",10,"bold"),textvariable=self.finallprice_var,width=29)
         txtActualPrice.grid(row=8,column=3)
 
 #=============================================DATA FRAME RIGHT=======================================================
@@ -167,8 +195,133 @@ class LibraryManagementSystem:
         listScrollbar=Scrollbar(DataFrameRight) 
         listScrollbar.grid(row=0,column=1,sticky="ns") 
 
-        listBoooks=['Head Firt Book','Learn Python The Hard Way','Python Programming','Secret Rahshy','Python CookBook','Into to Machine Learning','Fluent Python','Machine tecno','My Python','Joss Ellif guru','Elite Jungle python','Jungli Python','Mumbai Python','Pune Python','Machine python','Advance Python','Inton Python','RedChilli Python','Ishq Python']
+        listBoooks=['Head Firt Book','Learn Python The Hard Way','Python Programming','Secrete Rahshy','Python CookBook','Intro to Machine Learning','Fluent Python','Machine tecno','My Python','Joss Ellif guru','Elite Jungle python','Jungli Python','Mumbai Python','Pune Python','Machine python','Advance Python','Inton Python','RedChilli Python','Ishq Python']
+        
+        def SelectBook(event=""):
+                value=str(listBox.get(listBox.curselection()))
+                x=value
+                if(x=="Head Firt Book"):
+                        self.bookid_var.set("BKID5454")
+                        self.booktitle_var.set("Python Manual")
+                        self.author_var.set("Paul Berry") 
+                        
+                        
+                        d1=datetime.date.today()
+                        d2=datetime.timedelta(days=15)
+                        d3=d1+d2
+                        self.dateborrowed_var.set(d1)
+                        self.datedue_var.set(d3)
+                        self.daysonbook_var.set(15)
+                        self.lateretnfine_var.set("Rs.50")
+                        self.dateoverdue_var.set("NO")
+                        self.finallprice_var.set("Rs.788")
+                        
+                        
+                        
+                        
+                elif( x=="Learn Python The Hard Way"):
+                        self.bookid_var.set("BKID8796")
+                        self.booktitle_var.set("Basics Of Python")
+                        self.author_var.set("ZED A.SHAW") 
+                        
+                        
+                        d1=datetime.date.today()
+                        d2=datetime.timedelta(days=15)
+                        d3=d1+d2
+                        self.dateborrowed_var.set(d1)
+                        self.datedue_var.set(d3)
+                        self.daysonbook_var.set(15)
+                        self.lateretnfine_var.set("Rs.25")
+                        self.dateoverdue_var.set("NO")
+                        self.finallprice_var.set("Rs.725")
+                        
+                        
+                elif(x=="Python Programming"):
+                        self.bookid_var.set("BKID1245")
+                        self.booktitle_var.set("Intro To Python Comp Science")
+                        self.author_var.set("John Zhelle") 
+                        
+                        
+                        d1=datetime.date.today()
+                        d2=datetime.timedelta(days=15)
+                        d3=d1+d2
+                        self.dateborrowed_var.set(d1)
+                        self.datedue_var.set(d3)
+                        self.daysonbook_var.set(15)
+                        self.lateretnfine_var.set("Rs.25")
+                        self.dateoverdue_var.set("NO")
+                        self.finallprice_var.set("Rs.500")
+                        
+                        
+                        
+                elif(x=="Secrete Rahshy"):
+                        self.bookid_var.set("BKID8796")
+                        self.booktitle_var.set("Basic Of Python")
+                        self.author_var.set("Ref.Kapil Kamble") 
+                        
+                        
+                        d1=datetime.date.today()
+                        d2=datetime.timedelta(days=15)
+                        d3=d1+d2
+                        self.dateborrowed_var.set(d1)
+                        self.datedue_var.set(d3)
+                        self.daysonbook_var.set(15)
+                        self.lateretnfine_var.set("Rs.25")
+                        self.dateoverdue_var.set("NO")
+                        self.finallprice_var.set("Rs.289")
+                
+                
+                       
+                        
+                elif(x=="Python CookBook"):
+                        self.bookid_var.set("BKID2546")
+                        self.booktitle_var.set("Python CookBook")
+                        self.author_var.set("Brian Jones") 
+                        
+                        
+                        d1=datetime.date.today()
+                        d2=datetime.timedelta(days=15)
+                        d3=d1+d2
+                        self.dateborrowed_var.set(d1)
+                        self.datedue_var.set(d3)
+                        self.daysonbook_var.set(15)
+                        self.lateretnfine_var.set("Rs.25")
+                        self.dateoverdue_var.set("NO")
+                        self.finallprice_var.set("Rs.354")
+                     
+                     
+                elif(x=="Intro to Machine Learning"):
+                        self.bookid_var.set("BKID8796")
+                        self.booktitle_var.set("Intro To Machine Learning")
+                        self.author_var.set("Sarah Guaido") 
+                        
+                        
+                        d1=datetime.date.today()
+                        d2=datetime.timedelta(days=15)
+                        d3=d1+d2
+                        self.dateborrowed_var.set(d1)
+                        self.datedue_var.set(d3)
+                        self.daysonbook_var.set(15)
+                        self.lateretnfine_var.set("Rs.25")
+                        self.dateoverdue_var.set("NO")
+                        self.finallprice_var.set("Rs.725")
+                        
+               
+                        
+                        
+                        
+                        
+                        
+                
+                       
+                        
+                        
+                        
+                                                                                                                           
+                        
+                        
         listBox=Listbox(DataFrameRight,font=("arial",12,"bold"),width=15,height=14)
+        listBox.bind("<<ListboxSelect>>",SelectBook)
         listBox.grid(row=0,column=0,padx=4)    
         
         listScrollbar.config(command=listBox.yview)
@@ -182,7 +335,7 @@ class LibraryManagementSystem:
         Framebutton=Frame(self.root,bd=12,relief=RIDGE,padx=20,bg="powder blue")
         Framebutton.place(x=0,y=425,width=1279,height=50)
         
-        btnAddData=Button(Framebutton,text="Add Data", font=("arial",10,"bold"),width=24,bg="blue",fg="white")
+        btnAddData=Button(Framebutton,command=self.add_data,text="Add Data", font=("arial",10,"bold"),width=24,bg="blue",fg="white")
         btnAddData.grid(row=0,column=0)
 
         btnAddData=Button(Framebutton,text="Show Data", font=("arial",10,"bold"),width=24,bg="blue",fg="white")
@@ -235,7 +388,7 @@ class LibraryManagementSystem:
 
 
         self.library_table.heading("membertype",text="Member Type")
-        self.library_table.heading("prnno",text="PRN NO.")
+        self.library_table.heading("prnno",text="PRN   NO.")
         self.library_table.heading("title",text="Title")
         self.library_table.heading("firstname",text="First Name")
         self.library_table.heading("lastname",text="Last Name")
@@ -266,7 +419,7 @@ class LibraryManagementSystem:
         self.library_table.column("lastname",width=100)
         self.library_table.column("adress1",width=100)
         self.library_table.column("adress2",width=100)
-        self.library_table.column("postid",width=100)
+        self.library_table. column("postid",width=100)
         self.library_table.column("mobile",width=100)
         self.library_table.column("bookid",width=100)
         self.library_table.column("booktitle",width=100)
@@ -280,12 +433,60 @@ class LibraryManagementSystem:
         self.library_table.column("dateoverdue",width=100)
         self.library_table.column("finalprice",width=100)
 
-
-
-
-       
-
         
+ 
+
+    def add_data(self):
+        conn=mysql.connector.connect(host="localhost",username="root",password="amu26",database="mydata")
+        my_cursor=conn.cursor()
+        my_cursor.execute("insert into library values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",(
+                                                                                                                         self.member_var.get(),
+                                                                                                                         self.prn_var.get(),
+                                                                                                                         self.id_var.get(),                                                                                
+                                                                                                                         self.firstname_var.get(),
+                                                                                                                         self.lastname_var.get(),
+                                                                                                                         self.address1_var.get(),
+                                                                                                                         self.address2_var.get(),
+                                                                                                                         self.postcode_var.get(),
+                                                                                                                         self.mobile_var.get(),
+                                                                                                                         self.bookid_var.get(),
+                                                                                                                         self.booktitle_var.get(),
+                                                                                                                         self.author_var.get(),
+                                                                                                                         self.dateborrowed_var.get(),
+                                                                                                                         self.datedue_var.get(),
+                                                                                                                         self.daysonbook_var.get(),
+                                                                                                                         self.lateretnfine_var.get(),
+                                                                                                                         self.dateoverdue_var.get(),
+                                                                                                                         self.finallprice.get()
+
+                                                                                                                        ))                             
+
+                
+                
+        conn.commit()
+        self.fatch_data()
+        conn.close()      
+                
+                
+        messagebox.showinfo("Success","Inserted hurrey")
+                
+                
+                
+    def  fatch_data(self):
+            
+            conn=mysql.connector.connect(host="localhost",username="root",password="amu26",database="ydata")
+            my_cursor=conn.cursor()
+            my_cursor.execute("SELECT * FROM mydata.` library`;")
+            rows=my_cursor.fetchall()
+            
+            if len(rows)!=0:
+                    self.library_table.delete(*self.library_table.get_children())
+                    for i in rows:
+                        self.library_table.insert("",END,values=i)
+                    conn.commit()
+            conn.close()                
+                                  
+                  
 if __name__ == "__main__":
     root=Tk()
     obj=LibraryManagementSystem(root) 
