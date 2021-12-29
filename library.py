@@ -3,6 +3,7 @@ from tkinter import ttk
 import mysql.connector
 from tkinter import messagebox
 import datetime
+import tkinter
 import logging
 
 
@@ -184,11 +185,11 @@ class LibraryManagementSystem:
 #=============================================DATA FRAME RIGHT=======================================================
 
 
-        DataFrameRight=LabelFrame(frame,bd=12,padx=20,relief=RIDGE,bg="powder blue",font=("arial",12,"bold"),text="Book Details")
+        DataFrameRight=LabelFrame(frame,bd=12,padx=20,relief=RIDGE,bg="powder blue",font=("arial",11,"bold"),text="Book Details")
         DataFrameRight.place(x=750,y=5,width=450,height=318)
 
 
-        self.txtBox=Text(DataFrameRight, font=("arial",12,"bold"),width=23,height=14,padx=2,pady=6)
+        self.txtBox=Text(DataFrameRight, font=("arial",11,"bold"),width=26,height=14,padx=2,pady=6)
         self.txtBox.grid(row=0,column=2)
 
 
@@ -223,7 +224,7 @@ class LibraryManagementSystem:
                 elif( x=="Learn Python The Hard Way"):
                         self.bookid_var.set("BKID8796")
                         self.booktitle_var.set("Basics Of Python")
-                        self.author_var.set("ZED A.SHAW") 
+                        self.author_var.set("Zed A.Shaw") 
                         
                         
                         d1=datetime.date.today()
@@ -321,7 +322,7 @@ class LibraryManagementSystem:
                                                                                                                            
                         
                         
-        listBox=Listbox(DataFrameRight,font=("arial",12,"bold"),width=15,height=14)
+        listBox=Listbox(DataFrameRight,font=("arial",11,"bold"),width=15,height=14)
         listBox.bind("<<ListboxSelect>>",SelectBook)
         listBox.grid(row=0,column=0,padx=4)    
         
@@ -339,11 +340,11 @@ class LibraryManagementSystem:
         btnAddData=Button(Framebutton,command=self.add_data,text="Add Data", font=("arial",10,"bold"),width=24,bg="blue",fg="white")
         btnAddData.grid(row=0,column=0)
 
-        btnAddData=Button(Framebutton,text="Show Data", font=("arial",10,"bold"),width=24,bg="blue",fg="white")
+        btnAddData=Button(Framebutton,command=self.showData,text="Show Data", font=("arial",10,"bold"),width=24,bg="blue",fg="white")
         btnAddData.grid(row=0,column=1)
 
 
-        btnAddData=Button(Framebutton,text="Update", font=("arial",10,"bold"),width=24,bg="blue",fg="white")
+        btnAddData=Button(Framebutton,command=self.update,text="Update", font=("arial",10,"bold"),width=24,bg="blue",fg="white")
         btnAddData.grid(row=0,column=2)
 
 
@@ -351,11 +352,11 @@ class LibraryManagementSystem:
         btnAddData.grid(row=0,column=3)
 
 
-        btnAddData=Button(Framebutton,text="Reset", font=("arial",10,"bold"),width=24,bg="blue",fg="white")
+        btnAddData=Button(Framebutton,command=self.reset,text="Reset", font=("arial",10,"bold"),width=24,bg="blue",fg="white")
         btnAddData.grid(row=0,column=4)
 
 
-        btnAddData=Button(Framebutton,text="Exit", font=("arial",10,"bold"),width=24,bg="blue",fg="white")
+        btnAddData=Button(Framebutton,command=self.iExit,text="Exit", font=("arial",10,"bold"),width=24,bg="blue",fg="white")
         btnAddData.grid(row=0,column=5)
 #==================================================Information Frame============================================ 
 
@@ -434,8 +435,8 @@ class LibraryManagementSystem:
         self.library_table.column("dateoverdue",width=100)
         self.library_table.column("finalprice",width=100)
 
-        
- 
+        self.fatch_data()
+        self.library_table.bind("<ButtonRelease-1>",self.get_cursor)
 
     def add_data(self):
        # self.loggers.info("Inside add data ")  
@@ -472,6 +473,43 @@ class LibraryManagementSystem:
                 
                 
         messagebox.showinfo("Success","Insertion has been done successfully!")
+        
+        
+        
+    def update(self):
+        conn=mysql.connector.connect(host="localhost",username="root",password="amu26",database="mydat")
+        my_cursor=conn.cursor()
+        
+        
+        my_cursor.execute("update new_table set Member=%s,FirstName=%s,LastName=%s,Address1=%s,Address2=%s,PosdId=%s,Mobile=%s,Bookid=%s,Booktitle=%s,Author=%s,dateborrowed=%s,datedue=%s,daysofbook=%s,latereturnfine=%s,dateoverdue=%s,finalprice=%s where  PRN_NO=%s",(
+                
+                self.member_var.get(),
+                self.firstname_var.get(),
+                self.lastname_var.get(),
+                self.address1_var.get(),
+                self.address2_var.get(),
+                self.postcode_var.get(),
+                self.mobile_var.get(),
+                self.bookid_var.get(),
+                self.booktitle_var.get(),
+                self.author_var.get(),
+                self.dateborrowed_var.get(),
+                self.datedue_var.get(),
+                self.daysonbook_var.get(),
+                self.lateretnfine_var.get(),
+                self.dateoverdue_var.get(),
+                self.finallprice_var.get(),
+                self.prn_var.get(),      
+               
+                
+        ))
+        conn.commit()
+        self.fatch_data()
+        self.reset()
+        conn.close()
+        
+        messagebox.showinfo("Success","Member Has Been Updated")
+                
                 
                 
                 
@@ -489,7 +527,87 @@ class LibraryManagementSystem:
                     conn.commit()
             conn.close()                
                                   
-                  
+    def get_cursor(self,event=""):
+            cursor_row=self.library_table.focus()
+            content=self.library_table.item(cursor_row)
+            row=content['values']
+
+            self.member_var.set(row[0]),  
+            self.prn_var.set(row[1]),
+            self.id_var.set(row[2]),
+            self.firstname_var.set(row[3]),
+            self.lastname_var.set(row[4]),
+            self.address1_var.set(row[5]),
+            self.address2_var.set(row[6]),
+            self.postcode_var.set(row[7]),
+            self.mobile_var.set(row[8]),
+            self.bookid_var.set(row[9]),
+            self.booktitle_var.set(row[10]),
+            self.author_var.set(row[11]),
+            self.dateborrowed_var.set(row[12]),
+            self.datedue_var.set(row[13]),
+            self.daysonbook_var.set(row[14]),
+            self.lateretnfine_var.set(row[15]),
+            self.dateoverdue_var.set(row[16]),
+            self.finallprice_var.set(row[17])
+            
+            
+            
+    def showData(self):
+            self.txtBox.insert(END,"Member Type:\t\t"+self.member_var.get()+"\n")    
+            self.txtBox.insert(END,"PRN NO:\t\t"+self.prn_var.get()+"\n")    
+            self.txtBox.insert(END,"ID NO:\t\t"+self.id_var.get()+"\n")    
+            self.txtBox.insert(END,"First Name:\t\t"+self.firstname_var.get()+"\n")    
+            self.txtBox.insert(END,"Last Name:\t\t"+self.lastname_var.get()+"\n")    
+            self.txtBox.insert(END,"Address1:\t\t"+self.address1_var.get()+"\n")    
+            self.txtBox.insert(END,"Address:\t\t"+self.address2_var.get()+"\n")    
+            self.txtBox.insert(END,"Post Code:\t\t"+self.postcode_var.get()+"\n")    
+            self.txtBox.insert(END,"Mobile No:\t\t"+self.mobile_var.get()+"\n")    
+            self.txtBox.insert(END,"Book ID:\t\t"+self.bookid_var.get()+"\n")    
+            self.txtBox.insert(END,"Book Title:\t\t"+self.booktitle_var.get()+"\n")    
+            self.txtBox.insert(END,"Author:\t\t"+self.author_var.get()+"\n")    
+            self.txtBox.insert(END,"DateBorrowed:\t\t"+self.dateborrowed_var.get()+"\n")    
+            self.txtBox.insert(END,"DateDue:\t\t"+self.datedue_var.get()+"\n")    
+            self.txtBox.insert(END,"DaysOnBook:\t\t"+self.daysonbook_var.get()+"\n")    
+            self.txtBox.insert(END,"LateRetnFine:\t\t"+self.lateretnfine_var.get()+"\n")    
+            self.txtBox.insert(END,"DateOverDue:\t\t"+self.dateoverdue_var.get()+"\n")    
+            self.txtBox.insert(END,"Finallprice:\t\t"+self.finallprice_var.get()+"\n")    
+            
+            
+            
+            
+            
+            
+    def reset(self):
+            self.member_var.set(""),    
+            self.prn_var.set(""),    
+            self.id_var.set(""),    
+            self.firstname_var.set(""),    
+            self.lastname_var.set(""),    
+            self.address1_var.set(""),    
+            self.address2_var.set(""),    
+            self.postcode_var.set(""),    
+            self.mobile_var.set(""),    
+            self.bookid_var.set(""),    
+            self.booktitle_var.set(""),    
+            self.author_var.set(""),    
+            self.dateborrowed_var.set(""),    
+            self.datedue_var.set(""),    
+            self.daysonbook_var.set(""),    
+            self.lateretnfine_var.set(""),    
+            self.dateoverdue_var.set(""),    
+            self.finallprice_var.set(""),    
+            self.txtBox.delete("1.0",END)    
+            
+            
+            
+    def iExit(self):
+            iExit=tkinter.messagebox.askyesno("Library Management System","Do You Want To Exit?")
+            if iExit>0:
+                    self.root.destroy()
+                    return
+                       
+                                        
 if __name__ == "__main__":
     root=Tk()
     obj=LibraryManagementSystem(root) 
