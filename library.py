@@ -348,7 +348,7 @@ class LibraryManagementSystem:
         btnAddData.grid(row=0,column=2)
 
 
-        btnAddData=Button(Framebutton,text="Delete", font=("arial",10,"bold"),width=24,bg="blue",fg="white")
+        btnAddData=Button(Framebutton,command=self.delete,text="Delete", font=("arial",10,"bold"),width=24,bg="blue",fg="white")
         btnAddData.grid(row=0,column=3)
 
 
@@ -606,7 +606,24 @@ class LibraryManagementSystem:
             if iExit>0:
                     self.root.destroy()
                     return
-                       
+            
+    def delete(self):
+            if self.prn_var.get()=="" or self.id_var.get()=="":
+                    messagebox.showerror("Error","First Select The Member")
+            else: 
+                    conn=mysql.connector.connect(host="localhost",username="root",password="amu26",database="mydat")
+                    my_cursor=conn.cursor() 
+                    query="delete from new_table where PRN_NO=%s"
+                    value=(self.prn_var.get(),)
+                    my_cursor.execute(query,value) 
+                    
+                    
+                    conn.commit()
+                    self.fatch_data()
+                    self.reset()
+                    conn.close()
+                        
+                    messagebox.showinfo("Success","Member Has Been Deleted")                               
                                         
 if __name__ == "__main__":
     root=Tk()
