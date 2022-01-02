@@ -217,7 +217,8 @@ class LibraryManagementSystem:
                         self.lateretnfine_var.set("Rs.50")
                         self.dateoverdue_var.set("NO")
                         self.finallprice_var.set("Rs.788")
-                        
+                      #SELECT * FROM  library.MEMBER M,library.BOOK B,library.publisher P,library.author A,library.ADDRESS AD,library.borrowdetail BD  WHERE M.PRN_NO=AD.PRN_NO AND M.PRN_NO=BD.PRN_NO AND M.BOOKID=B.BOOKID AND B.PUBID=P.PubID AND B.AUTHORID=A.AuthorID ;
+  
                         
                         
                         
@@ -373,7 +374,7 @@ class LibraryManagementSystem:
         
         
         
-        self.library_table=ttk.Treeview(Table_frame,column=("membertype","prnno","title","firstname","lastname","adress1","adress2","postid","mobile","bookid","booktitle","author","dateborrowed","datedue","days","latereturnfine","dateoverdue","finalprice"),xscrollcommand=xscroll.set,yscrollcommand=yscroll.set)
+        self.library_table=ttk.Treeview(Table_frame,column=("membertype","prnno","MemID","firstname","lastname","adress1","adress2","postid","mobile","bookid","booktitle","author","dateborrowed","datedue","latereturnfine","finalprice"),xscrollcommand=xscroll.set,yscrollcommand=yscroll.set)
         xscroll.pack(side=BOTTOM,fill=X)
         yscroll.pack(side=RIGHT,fill=Y)
         
@@ -391,7 +392,7 @@ class LibraryManagementSystem:
 
         self.library_table.heading("membertype",text="Member Type")
         self.library_table.heading("prnno",text="PRN   NO.")
-        self.library_table.heading("title",text="Title")
+        self.library_table.heading("MemID",text="MemID")
         self.library_table.heading("firstname",text="First Name")
         self.library_table.heading("lastname",text="Last Name")
         self.library_table.heading("adress1",text="Address1")
@@ -404,9 +405,9 @@ class LibraryManagementSystem:
         self.library_table.heading("dateborrowed",text="Date Of borrowed")
         self.library_table.heading("datedue",text="Date Due")
 
-        self.library_table.heading("days",text="DaysOnBook")
+        #self.library_table.heading("days",text="DaysOnBook")
         self.library_table.heading("latereturnfine",text="LateReturnFine")
-        self.library_table.heading("dateoverdue",text="DateOverDue")            
+        #self.library_table.heading("dateoverdue",text="DateOverDue")            
         self.library_table.heading("finalprice",text="Final Price")
         
         self.library_table["show"]="headings"
@@ -416,7 +417,7 @@ class LibraryManagementSystem:
         
         self.library_table.column("membertype",width=100)             
         self.library_table.column("prnno",width=100)
-        self.library_table.column("title",width=100)
+        self.library_table.column("MemID",width=100)
         self.library_table.column("firstname",width=100)
         self.library_table.column("lastname",width=100)
         self.library_table.column("adress1",width=100)
@@ -429,10 +430,10 @@ class LibraryManagementSystem:
         self.library_table.column("dateborrowed",width=100)
 
         self.library_table.column("datedue",width=100)
-        self.library_table.column("days",width=100)
+       # self.library_table.column("days",width=100)
         self.library_table.column("latereturnfine",width=100)
 
-        self.library_table.column("dateoverdue",width=100)
+       # self.library_table.column("dateoverdue",width=100)
         self.library_table.column("finalprice",width=100)
 
         self.fatch_data()
@@ -440,33 +441,15 @@ class LibraryManagementSystem:
 
     def add_data(self):
        # self.loggers.info("Inside add data ")  
-        print(" self.member_var.get()", self.member_var.get())  
-        conn=mysql.connector.connect(host="localhost",username="root",password="amu26",database="mydat")
+        print(" self.member_var.get()", self.prn_var.get())  
+        conn=mysql.connector.connect(host="localhost",username="root",password="amu26",database="library")
         my_cursor=conn.cursor()
-        my_cursor.execute("insert into new_table values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",(
-                                                                                                                         self.member_var.get(),
-                                                                                                                         self.prn_var.get(),
-                                                                                                                         self.id_var.get(),                                                                                
-                                                                                                                         self.firstname_var.get(),
-                                                                                                                         self.lastname_var.get(),
-                                                                                                                         self.address1_var.get(),
-                                                                                                                         self.address2_var.get(),
-                                                                                                                         self.postcode_var.get(),
-                                                                                                                         self.mobile_var.get(),
-                                                                                                                         self.bookid_var.get(),
-                                                                                                                         self.booktitle_var.get(),
-                                                                                                                         self.author_var.get(),
-                                                                                                                         self.dateborrowed_var.get(),
-                                                                                                                         self.datedue_var.get(),
-                                                                                                                         self.daysonbook_var.get(),
-                                                                                                                         self.lateretnfine_var.get(),
-                                                                                                                         self.dateoverdue_var.get(),
-                                                                                                                         self.finallprice_var.get()
-
-                                                                                                                        ))                             
-
+        my_cursor.execute("insert into member values (%s,%s,%s,%s,%s,%s)",( self.prn_var.get(),self.member_var.get(),self.id_var.get(),self.firstname_var.get(),self.lastname_var.get(),self.bookid_var.get()))                            
+        my_cursor.execute("insert into address values (%s,%s,%s,%s,%s)",(self.address1_var.get(),self.address2_var.get(),self.mobile_var.get(),self.postcode_var.get(),self.prn_var.get()))                             
+        my_cursor.execute("insert into borrowdetail values (%s,%s,%s,%s,%s)",(self.dateborrowed_var.get(),self.lateretnfine_var.get(),self.finallprice_var.get(),self.datedue_var.get(),self.prn_var.get()))                             
+       
                 
-                
+                        
         conn.commit()
         self.fatch_data()
         conn.close()      
@@ -477,32 +460,14 @@ class LibraryManagementSystem:
         
         
     def update(self):
-        conn=mysql.connector.connect(host="localhost",username="root",password="amu26",database="mydat")
+        conn=mysql.connector.connect(host="localhost",username="root",password="amu26",database="library")
         my_cursor=conn.cursor()
         
         
-        my_cursor.execute("update new_table set Member=%s,FirstName=%s,LastName=%s,Address1=%s,Address2=%s,PosdId=%s,Mobile=%s,Bookid=%s,Booktitle=%s,Author=%s,dateborrowed=%s,datedue=%s,daysofbook=%s,latereturnfine=%s,dateoverdue=%s,finalprice=%s where  PRN_NO=%s",(
-                
-                self.member_var.get(),
-                self.firstname_var.get(),
-                self.lastname_var.get(),
-                self.address1_var.get(),
-                self.address2_var.get(),
-                self.postcode_var.get(),
-                self.mobile_var.get(),
-                self.bookid_var.get(),
-                self.booktitle_var.get(),
-                self.author_var.get(),
-                self.dateborrowed_var.get(),
-                self.datedue_var.get(),
-                self.daysonbook_var.get(),
-                self.lateretnfine_var.get(),
-                self.dateoverdue_var.get(),
-                self.finallprice_var.get(),
-                self.prn_var.get(),      
-               
-                
-        ))
+        my_cursor.execute("update member set MemberType=%s,F_name=%s,L_name=%s,BookID=%s where  PRN_NO=%s",(self.member_var.get(),self.firstname_var.get(),self.lastname_var.get(),self.bookid_var.get(),self.prn_var.get()))
+
+        my_cursor.execute("update address set Address1=%s,Address2=%s,Postcode=%s,MobNO=%s where  PRN_NO=%s",(self.address1_var.get(),self.address2_var.get(),self.postcode_var.get(),self.mobile_var.get(),self.prn_var.get()))
+        my_cursor.execute("update borrowdetail set BorrowedDate=%s,DueDate=%s,LateReturnFine=%s,FinalPrice=%s where  PRN_NO=%s",(self.dateborrowed_var.get(),self.datedue_var.get(),self.lateretnfine_var.get(),self.finallprice_var.get(),self.prn_var.get()))
         conn.commit()
         self.fatch_data()
         self.reset()
@@ -514,23 +479,27 @@ class LibraryManagementSystem:
                 
                 
     def  fatch_data(self):
-            
-            conn=mysql.connector.connect(host="localhost",username="root",password="amu26",database="mydat")
+            print("calling fetch data")
+            conn=mysql.connector.connect(host="localhost",username="root",password="amu26",database="library")
             my_cursor=conn.cursor()
-            my_cursor.execute("SELECT * FROM new_table")
+            my_cursor.execute("SELECT M.MemberType,M.PRN_NO,M.MemID,M.F_name,M.L_name,AD.address1,AD.ADDRESS2,AD.POSTCODE,AD.MOBNO,B.BOOKID,B.BOOKTITLE,A.AuthorName,BD.BorrowedDate,BD.DueDate,BD.LateReturnFine,BD.FinalPrice FROM  library.MEMBER M,library.BOOK B,library.publisher P,library.author A,library.ADDRESS AD,library.borrowdetail BD  WHERE M.PRN_NO=AD.PRN_NO AND M.PRN_NO=BD.PRN_NO AND M.BOOKID=B.BOOKID AND B.PUBID=P.PubID AND B.AUTHORID=A.AuthorID ")
             rows=my_cursor.fetchall()
-            
+
             if len(rows)!=0:
                     self.library_table.delete(*self.library_table.get_children())
                     for i in rows:
+                        print(i)
                         self.library_table.insert("",END,values=i)
                     conn.commit()
             conn.close()                
                                   
     def get_cursor(self,event=""):
+            print("calling fetch data")
+
             cursor_row=self.library_table.focus()
             content=self.library_table.item(cursor_row)
             row=content['values']
+            print("row ",row)
 
             self.member_var.set(row[0]),  
             self.prn_var.set(row[1]),
@@ -546,12 +515,10 @@ class LibraryManagementSystem:
             self.author_var.set(row[11]),
             self.dateborrowed_var.set(row[12]),
             self.datedue_var.set(row[13]),
-            self.daysonbook_var.set(row[14]),
-            self.lateretnfine_var.set(row[15]),
-            self.dateoverdue_var.set(row[16]),
-            self.finallprice_var.set(row[17])
-            
-            
+            self.daysonbook_var.set(15),
+            self.lateretnfine_var.set(row[14]),
+            self.dateoverdue_var.set("NO"),
+            self.finallprice_var.set(row[15])
             
     def showData(self):
             self.txtBox.insert(END,"Member Type:\t\t"+self.member_var.get()+"\n")    
@@ -611,11 +578,13 @@ class LibraryManagementSystem:
             if self.prn_var.get()=="" or self.id_var.get()=="":
                     messagebox.showerror("Error","First Select The Member")
             else: 
-                    conn=mysql.connector.connect(host="localhost",username="root",password="amu26",database="mydat")
+                    conn=mysql.connector.connect(host="localhost",username="root",password="amu26",database="library")
                     my_cursor=conn.cursor() 
-                    query="delete from new_table where PRN_NO=%s"
+                   # query="delete from member where PRN_NO=%s"
                     value=(self.prn_var.get(),)
-                    my_cursor.execute(query,value) 
+                    my_cursor.execute("delete from member where PRN_NO=%s",value) 
+                    my_cursor.execute("delete from address where PRN_NO=%s",value) 
+                    my_cursor.execute("delete from borrowdetail where PRN_NO=%s",value) 
                     
                     
                     conn.commit()
