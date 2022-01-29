@@ -1,4 +1,6 @@
 from tkinter import*
+import tkinter as tk
+
 from tkinter import ttk 
 import mysql.connector
 from tkinter import messagebox
@@ -36,7 +38,7 @@ class LibraryManagementSystem:
         self.lateretnfine_var=StringVar()
         self.dateoverdue_var=StringVar()
         self.finallprice_var=StringVar()
-        
+        self.search_var=StringVar()
 
 
         lbltitle=Label(self.root,text="LIBRARY MANAGEMENT SYSTEM",bg="powder blue",fg="green",bd=16,relief=RIDGE,font=("times new roman",30,"bold"),padx=2,pady=6)
@@ -188,9 +190,13 @@ class LibraryManagementSystem:
         DataFrameRight=LabelFrame(frame,bd=12,padx=20,relief=RIDGE,bg="powder blue",font=("arial",11,"bold"),text="Book Details")
         DataFrameRight.place(x=750,y=5,width=450,height=318)
 
-
-        self.txtBox=Text(DataFrameRight, font=("arial",11,"bold"),width=26,height=14,padx=2,pady=6)
-        self.txtBox.grid(row=0,column=2)
+        lblPRN_NO=Label(DataFrameRight,font=("arial",8,"bold"),text="PRN NO:",padx=2,bg="powder blue")
+        lblPRN_NO.grid(row=0,column=2,sticky=W)
+        txtPRN_NO=Entry(DataFrameRight,font=("arial",8,"bold"),textvariable=self.search_var,width=20)
+        txtPRN_NO.grid(row=0,column=3)
+        
+        btnAddData=Button(DataFrameRight,command=self.search,text="Search", font=("arial",7,"bold"),width=12,bg="grey",fg="white")
+        btnAddData.grid(row=0,column=4)
 
 
 
@@ -441,65 +447,53 @@ class LibraryManagementSystem:
 
     def add_data(self):
        # self.loggers.info("Inside add data ")  
-        print(" self.member_var.get()", self.prn_var.get())  
+       
+     if(not self.validate()):      
         conn=mysql.connector.connect(host="localhost",username="root",password="amu26",database="library")
         my_cursor=conn.cursor()
         my_cursor.execute("insert into member values (%s,%s,%s,%s,%s,%s)",( self.prn_var.get(),self.member_var.get(),self.id_var.get(),self.firstname_var.get(),self.lastname_var.get(),self.bookid_var.get()))                            
         my_cursor.execute("insert into address values (%s,%s,%s,%s,%s)",(self.address1_var.get(),self.address2_var.get(),self.mobile_var.get(),self.postcode_var.get(),self.prn_var.get()))                             
         my_cursor.execute("insert into borrowdetail values (%s,%s,%s,%s,%s)",(self.dateborrowed_var.get(),self.lateretnfine_var.get(),self.finallprice_var.get(),self.datedue_var.get(),self.prn_var.get()))                             
-       
-                
-                        
         conn.commit()
         self.fatch_data()
         conn.close()      
-                
-                
         messagebox.showinfo("Success","Insertion has been done successfully!")
         
         
         
     def update(self):
+      if(not self.validate()):      
         conn=mysql.connector.connect(host="localhost",username="root",password="amu26",database="library")
         my_cursor=conn.cursor()
-        
-        
         my_cursor.execute("update member set MemberType=%s,F_name=%s,L_name=%s,BookID=%s where  PRN_NO=%s",(self.member_var.get(),self.firstname_var.get(),self.lastname_var.get(),self.bookid_var.get(),self.prn_var.get()))
-
         my_cursor.execute("update address set Address1=%s,Address2=%s,Postcode=%s,MobNO=%s where  PRN_NO=%s",(self.address1_var.get(),self.address2_var.get(),self.postcode_var.get(),self.mobile_var.get(),self.prn_var.get()))
         my_cursor.execute("update borrowdetail set BorrowedDate=%s,DueDate=%s,LateReturnFine=%s,FinalPrice=%s where  PRN_NO=%s",(self.dateborrowed_var.get(),self.datedue_var.get(),self.lateretnfine_var.get(),self.finallprice_var.get(),self.prn_var.get()))
         conn.commit()
         self.fatch_data()
         self.reset()
         conn.close()
-        
         messagebox.showinfo("Success","Member Has Been Updated")
                 
                 
                 
                 
     def  fatch_data(self):
-            print("calling fetch data")
             conn=mysql.connector.connect(host="localhost",username="root",password="amu26",database="library")
             my_cursor=conn.cursor()
             my_cursor.execute("SELECT M.MemberType,M.PRN_NO,M.MemID,M.F_name,M.L_name,AD.address1,AD.ADDRESS2,AD.POSTCODE,AD.MOBNO,B.BOOKID,B.BOOKTITLE,A.AuthorName,BD.BorrowedDate,BD.DueDate,BD.LateReturnFine,BD.FinalPrice FROM  library.MEMBER M,library.BOOK B,library.publisher P,library.author A,library.ADDRESS AD,library.borrowdetail BD  WHERE M.PRN_NO=AD.PRN_NO AND M.PRN_NO=BD.PRN_NO AND M.BOOKID=B.BOOKID AND B.PUBID=P.PubID AND B.AUTHORID=A.AuthorID ")
             rows=my_cursor.fetchall()
-
             if len(rows)!=0:
                     self.library_table.delete(*self.library_table.get_children())
                     for i in rows:
-                        print(i)
                         self.library_table.insert("",END,values=i)
                     conn.commit()
             conn.close()                
                                   
     def get_cursor(self,event=""):
-            print("calling fetch data")
 
             cursor_row=self.library_table.focus()
             content=self.library_table.item(cursor_row)
             row=content['values']
-            print("row ",row)
 
             self.member_var.set(row[0]),  
             self.prn_var.set(row[1]),
@@ -521,30 +515,246 @@ class LibraryManagementSystem:
             self.finallprice_var.set(row[15])
             
     def showData(self):
-            self.txtBox.insert(END,"Member Type:\t\t"+self.member_var.get()+"\n")    
-            self.txtBox.insert(END,"PRN NO:\t\t"+self.prn_var.get()+"\n")    
-            self.txtBox.insert(END,"ID NO:\t\t"+self.id_var.get()+"\n")    
-            self.txtBox.insert(END,"First Name:\t\t"+self.firstname_var.get()+"\n")    
-            self.txtBox.insert(END,"Last Name:\t\t"+self.lastname_var.get()+"\n")    
-            self.txtBox.insert(END,"Address1:\t\t"+self.address1_var.get()+"\n")    
-            self.txtBox.insert(END,"Address:\t\t"+self.address2_var.get()+"\n")    
-            self.txtBox.insert(END,"Post Code:\t\t"+self.postcode_var.get()+"\n")    
-            self.txtBox.insert(END,"Mobile No:\t\t"+self.mobile_var.get()+"\n")    
-            self.txtBox.insert(END,"Book ID:\t\t"+self.bookid_var.get()+"\n")    
-            self.txtBox.insert(END,"Book Title:\t\t"+self.booktitle_var.get()+"\n")    
-            self.txtBox.insert(END,"Author:\t\t"+self.author_var.get()+"\n")    
-            self.txtBox.insert(END,"DateBorrowed:\t\t"+self.dateborrowed_var.get()+"\n")    
-            self.txtBox.insert(END,"DateDue:\t\t"+self.datedue_var.get()+"\n")    
-            self.txtBox.insert(END,"DaysOnBook:\t\t"+self.daysonbook_var.get()+"\n")    
-            self.txtBox.insert(END,"LateRetnFine:\t\t"+self.lateretnfine_var.get()+"\n")    
-            self.txtBox.insert(END,"DateOverDue:\t\t"+self.dateoverdue_var.get()+"\n")    
-            self.txtBox.insert(END,"Finallprice:\t\t"+self.finallprice_var.get()+"\n")    
+            
+            self.popup_bonus()
+
             
             
             
             
             
+    def popup_bonus(self):
             
+        win = tk.Toplevel()
+        win.wm_title("Show Book Details")
+        win.geometry('400x300')
+        txtBox=Text(win, font=("arial",11,"bold"),width=50,height=14,padx=2,pady=6)
+        txtBox.grid(row=0,column=0)
+        txtBox.insert(END,"Member Type:\t\t"+self.member_var.get()+"\n")    
+        txtBox.insert(END,"PRN NO:\t\t"+self.prn_var.get()+"\n")    
+        txtBox.insert(END,"ID NO:\t\t"+self.id_var.get()+"\n")    
+        txtBox.insert(END,"First Name:\t\t"+self.firstname_var.get()+"\n")    
+        txtBox.insert(END,"Last Name:\t\t"+self.lastname_var.get()+"\n")    
+        txtBox.insert(END,"Address1:\t\t"+self.address1_var.get()+"\n")    
+        txtBox.insert(END,"Address:\t\t"+self.address2_var.get()+"\n")    
+        txtBox.insert(END,"Post Code:\t\t"+self.postcode_var.get()+"\n")    
+        txtBox.insert(END,"Mobile No:\t\t"+self.mobile_var.get()+"\n")    
+        txtBox.insert(END,"Book ID:\t\t"+self.bookid_var.get()+"\n")    
+        txtBox.insert(END,"Book Title:\t\t"+self.booktitle_var.get()+"\n")    
+        txtBox.insert(END,"Author:\t\t"+self.author_var.get()+"\n")    
+        txtBox.insert(END,"DateBorrowed:\t\t"+self.dateborrowed_var.get()+"\n")    
+        txtBox.insert(END,"DateDue:\t\t"+self.datedue_var.get()+"\n")    
+        txtBox.insert(END,"DaysOnBook:\t\t"+self.daysonbook_var.get()+"\n")    
+        txtBox.insert(END,"LateRetnFine:\t\t"+self.lateretnfine_var.get()+"\n")    
+        txtBox.insert(END,"DateOverDue:\t\t"+self.dateoverdue_var.get()+"\n")    
+        txtBox.insert(END,"Finallprice:\t\t"+self.finallprice_var.get()+"\n")   
+
+
+        b=ttk.Button(win, text="Okay", command=win.destroy)
+        b.grid(row=1, column=0) 
+        
+    def search(self):
+            
+        win = tk.Toplevel()
+        win.wm_title("Show Book Details")
+        win.geometry("1000x1000")
+     
+        FrameDetails=Frame(win,bd=12,relief=RIDGE,padx=20,bg="powder blue")
+        FrameDetails.place(x=0,y=0,width=1280,height=167)
+        Table_frame=Frame(FrameDetails,bd=6,relief=RIDGE,bg="powder blue")
+        Table_frame.place(x=0,y=5,width=1220,height=130)
+        
+        
+        xscroll=ttk.Scrollbar(Table_frame,orient=HORIZONTAL)
+        yscroll=ttk.Scrollbar(Table_frame,orient=VERTICAL)
+
+        
+        
+        
+        library_table=ttk.Treeview(Table_frame,column=("membertype","prnno","MemID","firstname","lastname","adress1","adress2","postid","mobile","bookid","booktitle","author","dateborrowed","datedue","latereturnfine","finalprice"),xscrollcommand=xscroll.set,yscrollcommand=yscroll.set)
+        xscroll.pack(side=BOTTOM,fill=X)
+        yscroll.pack(side=RIGHT,fill=Y)
+        
+        
+        xscroll.config(command=library_table.xview)
+        yscroll.config(command=library_table.yview)
+
+        
+
+
+
+
+
+
+
+        library_table.heading("membertype",text="Member Type")
+        library_table.heading("prnno",text="PRN   NO.")
+        library_table.heading("MemID",text="MemID")
+        library_table.heading("firstname",text="First Name")
+        library_table.heading("lastname",text="Last Name")
+        library_table.heading("adress1",text="Address1")
+        library_table.heading("adress2",text="Address2")
+        library_table.heading("postid",text="Post ID")
+        library_table.heading("mobile",text="Mobile Number")
+        library_table.heading("bookid",text="Book ID")
+        library_table.heading("booktitle",text="Book Title")
+        library_table.heading("author",text="Author")
+        library_table.heading("dateborrowed",text="Date Of borrowed")
+        library_table.heading("datedue",text="Date Due")
+
+        #self.library_table.heading("days",text="DaysOnBook")
+        library_table.heading("latereturnfine",text="LateReturnFine")
+        #self.library_table.heading("dateoverdue",text="DateOverDue")            
+        library_table.heading("finalprice",text="Final Price")
+        
+        library_table["show"]="headings"
+        library_table.pack(fill=BOTH,expand=1)
+        
+        
+        
+        library_table.column("membertype",width=100)             
+        library_table.column("prnno",width=100)
+        library_table.column("MemID",width=100)
+        library_table.column("firstname",width=100)
+        library_table.column("lastname",width=100)
+        library_table.column("adress1",width=100)
+        library_table.column("adress2",width=100)
+        library_table. column("postid",width=100)
+        library_table.column("mobile",width=100)
+        library_table.column("bookid",width=100)
+        library_table.column("booktitle",width=100)
+        library_table.column("author",width=100)
+        library_table.column("dateborrowed",width=100)
+
+        library_table.column("datedue",width=100)
+       # self.library_table.column("days",width=100)
+        library_table.column("latereturnfine",width=100)
+
+       # self.library_table.column("dateoverdue",width=100)
+        library_table.column("finalprice",width=100)
+
+
+        # b=ttk.Button(win, text="Okay", command=win.destroy)
+        # b.grid(row=10, column=2) 
+        
+        conn=mysql.connector.connect(host="localhost",username="root",password="amu26",database="library")
+        my_cursor=conn.cursor()
+        my_cursor.execute("SELECT M.MemberType,M.PRN_NO,M.MemID,M.F_name,M.L_name,AD.address1,AD.ADDRESS2,AD.POSTCODE,AD.MOBNO,B.BOOKID,B.BOOKTITLE,A.AuthorName,BD.BorrowedDate,BD.DueDate,BD.LateReturnFine,BD.FinalPrice FROM  library.MEMBER M,library.BOOK B,library.publisher P,library.author A,library.ADDRESS AD,library.borrowdetail BD  WHERE   M.PRN_NO=AD.PRN_NO AND M.PRN_NO=BD.PRN_NO AND M.BOOKID=B.BOOKID AND B.PUBID=P.PubID AND B.AUTHORID=A.AuthorID AND  M.PRN_NO=%s",(self.search_var.get(),))
+        rows=my_cursor.fetchall()
+        if len(rows)!=0:
+                    self.library_table.delete(*library_table.get_children())
+                    for i in rows:
+                        library_table.insert("",END,values=i)
+                    conn.commit()
+        conn.close()        
+           
+
+    def validate(self):
+            message=""
+            if(self.member_var.get()==""):
+                    message="Member type is required"
+                    messagebox.showerror(message)
+                    return True
+
+            if(self.prn_var.get()==""):
+                    message="PRN NO is required"
+                    messagebox.showerror(message)
+                    return True
+                    
+            if(self.id_var.get()==""):
+                    message="ID NO is required"
+                    messagebox.showerror(message)
+                    return True
+                          
+            elif(self.id_var.get().isdigit()==False):
+                    message="ID NO onlys takes  integer value"
+                    messagebox.showerror(message)
+                    return True 
+            
+            if(self.firstname_var.get()==""):
+                    message="Firstname is required"
+                    messagebox.showerror(message)
+                    return True
+            
+            if(self.lastname_var.get()==""):
+                    message="Lastname is required"
+                    messagebox.showerror(message)
+                    return True  
+                      
+            if(self.address1_var.get()==""):
+                    message="Address1 is required"
+                    messagebox.showerror(message)
+                    return True
+            
+            if(self.address2_var.get()==""):
+                    message="Address2 is required"
+                    messagebox.showerror(message)
+                    return True
+                
+            if(self.postcode_var.get()==""):
+                    message="Post code is required"
+                    messagebox.showerror(message)
+                    return True        
+            elif(self.postcode_var.get().isdigit()==False):
+                    message="Post code onlys takes  integer value"
+                    messagebox.showerror(message)
+            elif(len(self.postcode_var.get())!=6):
+                    message="Please enter valid post code"
+                    messagebox.showerror(message)
+                    return True
+            if(self.mobile_var.get()==""):
+                    message="Mobile number is required"
+                    messagebox.showerror(message)
+                    return True        
+            elif(self.mobile_var.get().isdigit()==False):
+                    message="Mobile number onlys takes  integer value"
+                    messagebox.showerror(message)
+            elif(len(self.mobile_var.get())!=10):
+                    message="Please enter valid mobile number"
+                    messagebox.showerror(message)
+            if(self.bookid_var.get()==""):
+                    message="Book Id is required"
+                    messagebox.showerror(message)
+                    return True         
+
+            if(self.booktitle_var.get()==""):
+                    message="Book title is required"
+                    messagebox.showerror(message)
+                    return True 
+            if(self.author_var.get()==""):
+                    message="Author is required"
+                    messagebox.showerror(message)
+                    return True
+            if(self.dateborrowed_var.get()==""):
+                    message="Date borrowed is required"
+                    messagebox.showerror(message)
+                    return True 
+            if(self.datedue_var.get()==""):
+                    message="Due Date is required"
+                    messagebox.showerror(message)
+                    return True
+            
+            if(self.daysonbook_var.get()==""):
+                    message="days on book is required"
+                    messagebox.showerror(message)
+                    return True
+            if(self.lateretnfine_var.get()==""):
+                    message="late return fine is required"
+                    messagebox.showerror(message)
+                    return True 
+            if(self.dateoverdue_var.get()==""):
+                    message="Date overdue is required"
+                    messagebox.showerror(message)
+                    return True
+            if(self.finallprice_var.get()==""):
+                    message="Final price is required"
+                    messagebox.showerror(message)
+                    return True
+            
+            return False   
+             
+            
+                    
     def reset(self):
             self.member_var.set(""),    
             self.prn_var.set(""),    
