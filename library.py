@@ -121,6 +121,8 @@ class LibraryManagementSystem:
         lblBookId.grid(row=0,column=2,sticky=W)
         txtBookId=Entry(DataFrameLeft,font=("arial",10,"bold"),textvariable=self.bookid_var,width=29)
         txtBookId.grid(row=0,column=3)
+        txtBookId.config(state=DISABLED)
+
 
 
 
@@ -128,14 +130,14 @@ class LibraryManagementSystem:
         lblBookTitle.grid(row=1,column=2,sticky=W)
         txtBookTitle=Entry(DataFrameLeft,font=("arial",10,"bold"),textvariable=self.booktitle_var,width=29)
         txtBookTitle.grid(row=1,column=3)
-
+        txtBookTitle.config(state=DISABLED)
 
 
         lblAuthor=Label(DataFrameLeft,font=("arial",10,"bold"),text="Author Name:",padx=2,pady=6,bg="powder blue")
         lblAuthor.grid(row=2,column=2,sticky=W)
         txtAuthor=Entry(DataFrameLeft,font=("arial",10,"bold"),textvariable=self.author_var,width=29)
         txtAuthor.grid(row=2,column=3)
-      
+        txtAuthor.config(state=DISABLED)
 
 
 
@@ -202,16 +204,21 @@ class LibraryManagementSystem:
 
         listScrollbar=Scrollbar(DataFrameRight) 
         listScrollbar.grid(row=0,column=1,sticky="ns") 
+        conn=mysql.connector.connect(host="localhost",username="root",password="amu26",database="library")
+        my_cursor=conn.cursor()
+        my_cursor.execute("SELECT B.BookID,B.BookTitle,B.AuthorID,A.AuthorName,B.PubID,P.PublisherName FROM  library.BOOK B,library.publisher P,library.author A   WHERE B.AuthorID=A.AuthorID AND B.PubID=P.PubID")
+        rows=my_cursor.fetchall()
+        
 
-        listBoooks=['Head Firt Book','Learn Python The Hard Way','Python Programming','Secrete Rahshy','Python CookBook','Intro to Machine Learning','Fluent Python','Machine tecno','My Python','Joss Ellif guru','Elite Jungle python','Jungli Python','Mumbai Python','Pune Python','Machine python','Advance Python','Inton Python','RedChilli Python','Ishq Python']
         
         def SelectBook(event=""):
                 value=str(listBox.get(listBox.curselection()))
                 x=value
-                if(x=="Head Firt Book"):
-                        self.bookid_var.set("BKID5454")
-                        self.booktitle_var.set("Python Manual")
-                        self.author_var.set("Paul Berry") 
+                for row in rows:
+                  if(x==row[1]):
+                        self.bookid_var.set(row[0])
+                        self.booktitle_var.set(row[1])
+                        self.author_var.set(row[3]) 
                         
                         
                         d1=datetime.date.today()
@@ -223,121 +230,19 @@ class LibraryManagementSystem:
                         self.lateretnfine_var.set("Rs.50")
                         self.dateoverdue_var.set("NO")
                         self.finallprice_var.set("Rs.788")
-                      #SELECT * FROM  library.MEMBER M,library.BOOK B,library.publisher P,library.author A,library.ADDRESS AD,library.borrowdetail BD  WHERE M.PRN_NO=AD.PRN_NO AND M.PRN_NO=BD.PRN_NO AND M.BOOKID=B.BOOKID AND B.PUBID=P.PubID AND B.AUTHORID=A.AuthorID ;
-  
-                        
-                        
-                        
-                elif( x=="Learn Python The Hard Way"):
-                        self.bookid_var.set("BKID8796")
-                        self.booktitle_var.set("Basics Of Python")
-                        self.author_var.set("Zed A.Shaw") 
-                        
-                        
-                        d1=datetime.date.today()
-                        d2=datetime.timedelta(days=15)
-                        d3=d1+d2
-                        self.dateborrowed_var.set(d1)
-                        self.datedue_var.set(d3)
-                        self.daysonbook_var.set(15)
-                        self.lateretnfine_var.set("Rs.25")
-                        self.dateoverdue_var.set("NO")
-                        self.finallprice_var.set("Rs.725")
-                        
-                        
-                elif(x=="Python Programming"):
-                        self.bookid_var.set("BKID1245")
-                        self.booktitle_var.set("Intro To Python Comp Science")
-                        self.author_var.set("John Zhelle") 
-                        
-                        
-                        d1=datetime.date.today()
-                        d2=datetime.timedelta(days=15)
-                        d3=d1+d2
-                        self.dateborrowed_var.set(d1)
-                        self.datedue_var.set(d3)
-                        self.daysonbook_var.set(15)
-                        self.lateretnfine_var.set("Rs.25")
-                        self.dateoverdue_var.set("NO")
-                        self.finallprice_var.set("Rs.500")
-                        
-                        
-                        
-                elif(x=="Secrete Rahshy"):
-                        self.bookid_var.set("BKID8796")
-                        self.booktitle_var.set("Basic Of Python")
-                        self.author_var.set("Ref.Kapil Kamble") 
-                        
-                        
-                        d1=datetime.date.today()
-                        d2=datetime.timedelta(days=15)
-                        d3=d1+d2
-                        self.dateborrowed_var.set(d1)
-                        self.datedue_var.set(d3)
-                        self.daysonbook_var.set(15)
-                        self.lateretnfine_var.set("Rs.25")
-                        self.dateoverdue_var.set("NO")
-                        self.finallprice_var.set("Rs.289")
                 
-                
-                       
-                        
-                elif(x=="Python CookBook"):
-                        self.bookid_var.set("BKID2546")
-                        self.booktitle_var.set("Python CookBook")
-                        self.author_var.set("Brian Jones") 
-                        
-                        
-                        d1=datetime.date.today()
-                        d2=datetime.timedelta(days=15)
-                        d3=d1+d2
-                        self.dateborrowed_var.set(d1)
-                        self.datedue_var.set(d3)
-                        self.daysonbook_var.set(15)
-                        self.lateretnfine_var.set("Rs.25")
-                        self.dateoverdue_var.set("NO")
-                        self.finallprice_var.set("Rs.354")
-                     
-                     
-                elif(x=="Intro to Machine Learning"):
-                        self.bookid_var.set("BKID8796")
-                        self.booktitle_var.set("Intro To Machine Learning")
-                        self.author_var.set("Sarah Guaido") 
-                        
-                        
-                        d1=datetime.date.today()
-                        d2=datetime.timedelta(days=15)
-                        d3=d1+d2
-                        self.dateborrowed_var.set(d1)
-                        self.datedue_var.set(d3)
-                        self.daysonbook_var.set(15)
-                        self.lateretnfine_var.set("Rs.25")
-                        self.dateoverdue_var.set("NO")
-                        self.finallprice_var.set("Rs.725")
-                        
-               
-                        
-                        
-                        
-                        
-                        
-                
-                       
-                        
-                        
-                        
-                                                                                                                           
+                                                                                                                  
                         
                         
         listBox=Listbox(DataFrameRight,font=("arial",11,"bold"),width=15,height=14)
+        for item in rows:
+             listBox.insert(END,item[1])
         listBox.bind("<<ListboxSelect>>",SelectBook)
         listBox.grid(row=0,column=0,padx=4)    
-        
+
         listScrollbar.config(command=listBox.yview)
 
-
-        for item in listBoooks:
-                listBox.insert(END,item)
+            
 
 #=====================================================BUTTONS FRAME==================================================
 
@@ -451,12 +356,24 @@ class LibraryManagementSystem:
      if(not self.validate()):      
         conn=mysql.connector.connect(host="localhost",username="root",password="amu26",database="library")
         my_cursor=conn.cursor()
-        my_cursor.execute("insert into member values (%s,%s,%s,%s,%s,%s)",( self.prn_var.get(),self.member_var.get(),self.id_var.get(),self.firstname_var.get(),self.lastname_var.get(),self.bookid_var.get()))                            
-        my_cursor.execute("insert into address values (%s,%s,%s,%s,%s)",(self.address1_var.get(),self.address2_var.get(),self.mobile_var.get(),self.postcode_var.get(),self.prn_var.get()))                             
-        my_cursor.execute("insert into borrowdetail values (%s,%s,%s,%s,%s)",(self.dateborrowed_var.get(),self.lateretnfine_var.get(),self.finallprice_var.get(),self.datedue_var.get(),self.prn_var.get()))                             
+        my_cursor.execute("SELECT COUNT(1) FROM member WHERE PRN_NO=%s",(self.prn_var.get(),))
+        if my_cursor.fetchone()[0]:
+         my_cursor.execute("SELECT COUNT(1) FROM borrowdetail WHERE PRN_NO=%s AND BookID=%s",(self.prn_var.get(),self.bookid_var.get()))
+         data=my_cursor.fetchone()[0]
+         if data>0:
+          messagebox.showerror("Error","The Book is allready borrowed!!")
+          return
+         else:
+           my_cursor.execute("insert into borrowdetail values (%s,%s,%s,%s,%s,%s)",(self.dateborrowed_var.get(),self.lateretnfine_var.get(),self.finallprice_var.get(),self.datedue_var.get(),self.prn_var.get(),self.bookid_var.get()))                             
+          
+        else:
+         my_cursor.execute("insert into member values (%s,%s,%s,%s,%s)",( self.prn_var.get(),self.member_var.get(),self.id_var.get(),self.firstname_var.get(),self.lastname_var.get()))                            
+         my_cursor.execute("insert into address values (%s,%s,%s,%s,%s)",(self.address1_var.get(),self.address2_var.get(),self.mobile_var.get(),self.postcode_var.get(),self.prn_var.get()))                             
+         my_cursor.execute("insert into borrowdetail values (%s,%s,%s,%s,%s,%s)",(self.dateborrowed_var.get(),self.lateretnfine_var.get(),self.finallprice_var.get(),self.datedue_var.get(),self.prn_var.get(),self.bookid_var.get()))                             
         conn.commit()
+        conn.close()  
         self.fatch_data()
-        conn.close()      
+    
         messagebox.showinfo("Success","Insertion has been done successfully!")
         
         
@@ -465,9 +382,9 @@ class LibraryManagementSystem:
       if(not self.validate()):      
         conn=mysql.connector.connect(host="localhost",username="root",password="amu26",database="library")
         my_cursor=conn.cursor()
-        my_cursor.execute("update member set MemberType=%s,F_name=%s,L_name=%s,BookID=%s where  PRN_NO=%s",(self.member_var.get(),self.firstname_var.get(),self.lastname_var.get(),self.bookid_var.get(),self.prn_var.get()))
+        my_cursor.execute("update member set MemberType=%s,MemID=%s,F_name=%s,L_name=%s where  PRN_NO=%s",(self.member_var.get(),self.id_var.get(),self.firstname_var.get(),self.lastname_var.get(),self.prn_var.get()))
         my_cursor.execute("update address set Address1=%s,Address2=%s,Postcode=%s,MobNO=%s where  PRN_NO=%s",(self.address1_var.get(),self.address2_var.get(),self.postcode_var.get(),self.mobile_var.get(),self.prn_var.get()))
-        my_cursor.execute("update borrowdetail set BorrowedDate=%s,DueDate=%s,LateReturnFine=%s,FinalPrice=%s where  PRN_NO=%s",(self.dateborrowed_var.get(),self.datedue_var.get(),self.lateretnfine_var.get(),self.finallprice_var.get(),self.prn_var.get()))
+        my_cursor.execute("update borrowdetail set BorrowedDate=%s,DueDate=%s,LateReturnFine=%s,FinalPrice=%s  where  BookID=%s and PRN_NO=%s",(self.dateborrowed_var.get(),self.datedue_var.get(),self.lateretnfine_var.get(),self.finallprice_var.get(),self.bookid_var.get(),self.prn_var.get()))
         conn.commit()
         self.fatch_data()
         self.reset()
@@ -480,10 +397,11 @@ class LibraryManagementSystem:
     def  fatch_data(self):
             conn=mysql.connector.connect(host="localhost",username="root",password="amu26",database="library")
             my_cursor=conn.cursor()
-            my_cursor.execute("SELECT M.MemberType,M.PRN_NO,M.MemID,M.F_name,M.L_name,AD.address1,AD.ADDRESS2,AD.POSTCODE,AD.MOBNO,B.BOOKID,B.BOOKTITLE,A.AuthorName,BD.BorrowedDate,BD.DueDate,BD.LateReturnFine,BD.FinalPrice FROM  library.MEMBER M,library.BOOK B,library.publisher P,library.author A,library.ADDRESS AD,library.borrowdetail BD  WHERE M.PRN_NO=AD.PRN_NO AND M.PRN_NO=BD.PRN_NO AND M.BOOKID=B.BOOKID AND B.PUBID=P.PubID AND B.AUTHORID=A.AuthorID ")
+            my_cursor.execute("SELECT M.MemberType,M.PRN_NO,M.MemID,M.F_name,M.L_name,AD.address1,AD.ADDRESS2,AD.POSTCODE,AD.MOBNO,B.BOOKID,B.BOOKTITLE,A.AuthorName,BD.BorrowedDate,BD.DueDate,BD.LateReturnFine,BD.FinalPrice FROM  library.MEMBER M,library.BOOK B,library.publisher P,library.author A,library.ADDRESS AD,library.borrowdetail BD  WHERE M.PRN_NO=AD.PRN_NO AND M.PRN_NO=BD.PRN_NO AND BD.BOOKID=B.BOOKID AND B.PUBID=P.PubID AND B.AUTHORID=A.AuthorID ")
             rows=my_cursor.fetchall()
+
+            self.library_table.delete(*self.library_table.get_children())
             if len(rows)!=0:
-                    self.library_table.delete(*self.library_table.get_children())
                     for i in rows:
                         self.library_table.insert("",END,values=i)
                     conn.commit()
@@ -639,7 +557,7 @@ class LibraryManagementSystem:
         
         conn=mysql.connector.connect(host="localhost",username="root",password="amu26",database="library")
         my_cursor=conn.cursor()
-        my_cursor.execute("SELECT M.MemberType,M.PRN_NO,M.MemID,M.F_name,M.L_name,AD.address1,AD.ADDRESS2,AD.POSTCODE,AD.MOBNO,B.BOOKID,B.BOOKTITLE,A.AuthorName,BD.BorrowedDate,BD.DueDate,BD.LateReturnFine,BD.FinalPrice FROM  library.MEMBER M,library.BOOK B,library.publisher P,library.author A,library.ADDRESS AD,library.borrowdetail BD  WHERE   M.PRN_NO=AD.PRN_NO AND M.PRN_NO=BD.PRN_NO AND M.BOOKID=B.BOOKID AND B.PUBID=P.PubID AND B.AUTHORID=A.AuthorID AND  M.PRN_NO=%s",(self.search_var.get(),))
+        my_cursor.execute("SELECT M.MemberType,M.PRN_NO,M.MemID,M.F_name,M.L_name,AD.address1,AD.ADDRESS2,AD.POSTCODE,AD.MOBNO,B.BOOKID,B.BOOKTITLE,A.AuthorName,BD.BorrowedDate,BD.DueDate,BD.LateReturnFine,BD.FinalPrice FROM  library.MEMBER M,library.BOOK B,library.publisher P,library.author A,library.ADDRESS AD,library.borrowdetail BD  WHERE   M.PRN_NO=AD.PRN_NO AND M.PRN_NO=BD.PRN_NO AND BD.BOOKID=B.BOOKID AND B.PUBID=P.PubID AND B.AUTHORID=A.AuthorID AND  M.PRN_NO=%s",(self.search_var.get(),))
         rows=my_cursor.fetchall()
         if len(rows)!=0:
                     self.library_table.delete(*library_table.get_children())
@@ -774,7 +692,6 @@ class LibraryManagementSystem:
             self.lateretnfine_var.set(""),    
             self.dateoverdue_var.set(""),    
             self.finallprice_var.set(""),    
-            self.txtBox.delete("1.0",END)    
             
             
             
@@ -792,9 +709,14 @@ class LibraryManagementSystem:
                     my_cursor=conn.cursor() 
                    # query="delete from member where PRN_NO=%s"
                     value=(self.prn_var.get(),)
-                    my_cursor.execute("delete from member where PRN_NO=%s",value) 
-                    my_cursor.execute("delete from address where PRN_NO=%s",value) 
-                    my_cursor.execute("delete from borrowdetail where PRN_NO=%s",value) 
+                     
+                    my_cursor.execute("delete from borrowdetail where PRN_NO=%s AND BOOKID=%s",(self.prn_var.get(),self.bookid_var.get())) 
+                    my_cursor.execute("SELECT COUNT(1) FROM borrowdetail WHERE PRN_NO=%s",(self.prn_var.get(),))
+                    data=my_cursor.fetchone()[0]
+                    print(data)
+                    if (data==0):
+                      my_cursor.execute("delete from member where PRN_NO=%s",value) 
+                      my_cursor.execute("delete from address where PRN_NO=%s",value)  
                     
                     
                     conn.commit()
